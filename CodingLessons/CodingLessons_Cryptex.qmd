@@ -1,0 +1,81 @@
+---
+title: "CodingLessons_Cryptex"
+---
+
+# Cryptex Project
+
+## Initial process: 
+
+- Github pages to create free site that uses static html structure.
+
+- Followed a Pirate translator example to format the initial index.html, which included the title, headers, paragraphs, guess button, etc...
+
+- Used Pyscript to process cryptex.py file that was included in the same repository as the index.html
+
+Original Cryptex file found here: <https://github.com/FocusWaiver/FocusWaiver.github.io/blob/main/Cryptex.py>
+
+### Cryptex.py contains 3 functions, 
+
+- `def AnswerCk`: (Main part of code structure) Runs on click of guess button, process input, runs guess through `Valid`, If guess is invalid error message and if `Valid` then nested logic if guess matches correct answer or sends to scorer for user feedback.
+
+- `def Valid`, Checks if guess is 5 letters and if so is each letter one of the English 26.
+
+- `def scorer`: Checks if any letters match exact position to answer, replaces those letters with '\*' and increases score by 2pts for each, runs through list of letters( and astericks) to give 1 point for letters that match the answer but are not in the exact position. Return score.
+
+### Issues:
+
+- Possible to inspect html, find the python file, navigate to it and see the hard coded answer.
+
+- Old feedback would stack sequentially per guess and fill up the visual space
+
+## CryptexSecure
+
+Goal: Attempt to shield answer from user
+
+- html is very open by itself, hint why it is the base of how websites started out. So to help, I needed a back-end platform. After Claude gave some options of platforms to use. I went with Render because they were free and should remain free even after hobby usage of this program.
+
+- The new py file was put into a private repo and the Render project was connected through my github and given authorization to access that private repo. (Public version) <https://github.com/FocusWaiver/FocusWaiver.github.io/blob/main/CryptexSecure_PUBLIC.py>
+
+- Updated the html to connect through the render project to use the python script and receive the score and if the win condition was met, then using CSS(?) display that to the user. For some reason this fixed the output stack issue. Obviously this process also fixed being able to easily see the answer.
+
+### Changes from v1 of python file to v2
+
+- No more pyscript, use flask, flask_CORS and result is in json format
+
+- Flask similar formating and CORS is to secure that only our website can hit our render project
+
+- Scorer now called score_guess but still works the same way
+
+- Vaild has no change
+
+- process_guess is the new main function and app is pathed to it. Processes user guess, runs it through Valid and based on that will return a json result with the score and if the win condition was met.
+
+###  index.html after answer was made more secure
+
+Relied on Claude.ai quite a bit to troubleshoot and format this correctly.
+
+**In script**: Removed pyscript lines, Used getElementById and addEventListener for clicking the guess button, has 3 const for guessInput, output and trim guessInput, Text to user asking for patience due to server restraint, try logic to fetch python script from render, if successful it awaits for result. If/else for win condition with relevant text to user.
+
+## Room for improvement
+
+- Spice up the style of UI
+
+- remember best guess?
+
+- Stop brute force?
+
+## Further learning
+
+- **CORS:** Cross-Origin Resource Sharing, Used by more than just Flask. standard web security mechanism enforced by web browsers, not backend. Described like "Is this frontend website allowed to look at your data?". If CORS is not noted and the front and back end do not share origins (Same-Origin Policy), then Frontend will likely be blocked from being able to read the data. An Origin can be the Protocol (Http,Https), domain (example.com) and Port (5000,3000, etc...). Port is like an apartment building and your IP is like a street. Apps need to know which port they should be reacting too. Some have specific defaults to avoid clashing with others. There are 65535 virtual ports. Hardware ports are different, and virtual ports date back to ARPANET.
+
+- **POST**: Part of the three things that help a server understand your http request and the JSON payload you are sending. 3 Things you need to have in your request are POST method, telling server you want to submit or create new data. The Headers `"Content-Type": "Application/json"` explain to parse data as a json. Lastly, the body, the json payload(keys and strings must use "")
+
+- **app.run()**: Is the easy way to start the web server, but it is not for production due to its' instability and performance issues and security risks. To fix, I needed to make sure the requirements.txt file was being read by Render, Render had `pip install -r requirements.txt` set up and the start command was `gunicorn pyexample: app`(what I called the app object)
+
+- CSS/What did we end up using:
+
+  - **HTML (Hypertext Markup Language**) The skeleton that does structure and content (headers, paragraphs, tables, links, images)
+
+  - **CSS (Cascading Style Sheets)** Skin and clothes, presentation and design, colors fonts, layouts
+
+  - **JS (JavaScript)** Brain and muscles, Interactivity & Logic, make elements react to clicks, fetch data, etc...
