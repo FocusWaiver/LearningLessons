@@ -1,0 +1,14 @@
+---
+title: "P4DA_Ch4"
+format: html
+---
+
+# Python 4 Data Analysis, Chapter 4
+
+## NumPy Basics
+
+NumPy's importance comes from its array objects among other mathematical and C API capabilities.
+
+```{python}
+print(1+1)
+```
