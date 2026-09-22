@@ -1,5 +1,6 @@
 ---
 title: "P4DA_Ch4"
+jupyter: python3
 format: html
 ---
 
@@ -9,6 +10,119 @@ format: html
 
 NumPy's importance comes from its array objects among other mathematical and C API capabilities.
 
+Why NumPy is designed with efficiency with large data:
+
+- NumPy internally stores data in a contiguous block of memory, independent of other built-in Python objects. They also use much less memory.
+
+- Can perform complex computations on entire arrays without for loops. NumPy is faster than regular Python because of its C-based algorithms that avoid overhead, extra memory or CPU cost that isn't going towards storing or processing data.
+
+  NumPy can be 10-100 times faster (%timeit in IPy, timeit in Py)
+
 ```{python}
-print(1+1)
+import numpy as np
+#intro to ndarrays, shape(size of demensions) and dtype(data type descrip)
+data = np.array([[1,2,0.3], [0,-3, 0.5]])
+print(data*10)
+print(data.shape, data.dtype)
+
+```
+
+## NumPy ndarray
+
+Viable ndarray data can be a list and a list of equal length lists(2 in ex). Giving a shape of (1, elements) and (2, elements) respectively. NumPy infers shape from data so ndim and shape attributes can be used to check. You can use np.zeros, np.ones, and np.empty to create new arrays with all 0's, 1's or uninitialized memory(not all zeros, so only use populate with new data. Pass tuples to make multidimensions.
+
+```{python}
+np.zeros(5)
+np.ones((3,5))
+np.empty((2,3,2))
+#also
+print(" ")
+np.arange(17)
+test_arr = np.asarray([[1,2,3,4], [4,3,2,1]])
+test_one = np.ones_like(test_arr)
+test_full = np.full_like(test_arr,10)
+test_arr, test_one, test_full
+
+np.eye(3)
+np.identity(3)
+```
+
+Other useful NumPy array creations:
+
+asarray- convert input to ndarray, but do not copy if the input is already an ndarray
+
+arange- like range but returns an ndarray instead of a list
+
+full- create array of the given shape and dtype with all values set to the indicated fill value
+
+ones_like/also zeros, empty, full - takes another array and produces a (ones/zeros/etc)\_like array of the shape and data type
+
+eye, identity - create a square N x N identity matrix (1s on the diagonal and 0s elsewhere)
+
+### Data Types
+
+This storage stratgy helps NumPy be so efficient with memory. There's a table of different types with the bit size category (int8). More important, here are the types of data int, float, complex(represented by 2 of the 32, 64 or 128 float options), bool (T/F), object(any Py object), string\_ and unicode\_ . Note Int has signed (can be negative) and unsigned(non-negative) and for 8bit signed is -128 to 127 while unsign is 0 to 255. (2\^8 = 256).
+
+You can cast an array from one data type to another with `test_arr.astype(np.int32)` . If float to int it will truncate decimal and not round, can also apply to strings but apparently `np.string_`is a fixed size and my truncate without warning, pandas is better for that. astype always creates a new array (copy) even if that data is the same as the older version
+
+### Arithmetic
+
+You can do operations without for loops, perform arithmetic with a scalar on and arith between any equal size array. Comparisons will give a Boolean response.
+
+```{python}
+test_arr = np.asarray([[1,2,3,4], [4,3,2,1]])
+10 * test_arr
+test2 = np.array([[0,3,2,4], [0,3,3,-4]])
+test_arr > test2
+```
+
+### Basic Indexing and Slicing
+
+```{python}
+#One Dimensional
+arr = np.arange(10)
+arr[5:8]
+arr[5:8] = 12
+arr
+#12 is propogated/broadcast to [5:8]
+arr_slice = arr[5:8]
+arr_slice
+arr_slice[1] = 12345
+arr
+#bare slice that assigns to all values in an array
+arr_slice[:] = 73
+arr
+#Multidimensional
+testnarr = np.array([[1,2,3],[4,5,6], [7,8,9]])
+testnarr[1,1]
+testnarr[1][1]
+#slicing
+tnar = testnarr
+#1&2, 0&1
+tnar[1:,:2]
+#0, last element
+tnar[:1,2:]
+#[Start at:stop before]
+
+```
+
+Note: that array slices are views on the original array, so the data is not copied and any modifications to the view will be reflected in the source array. If you want a copy you can use `arr[5:8].copy()` Pandas does this too
+
+### Boolean Indexing
+
+You can create a boolean array to apply all where say "Bob" in names to a different array to get those values in the same positions.
+
+```{python}
+names = np.array(["Bob", "Joe", "Will", "Bob", "Will", "Joe", "Joe"])
+data = np.array([[4, 7], [0, 2], [-5, 6], [0, 0], [1, 2],[-12, -4], [3, 4]])
+
+data[names == "Bob"]
+#ways to negate
+#names != "Bob"
+#~(names == "bob")
+data[~(names == "Bob")]
+#note you can also use ~ on a variable
+# Can use &(and) and |(or), but only the symbols not keywords like Py
+#based on how this works you can change all negative values to 0s 
+data[data < 0] = 0
 ```
