@@ -4,7 +4,9 @@ jupyter: python3
 format: html
 ---
 
-# Python 4 Data Analysis, Chapter 4
+# Python 4 Data Analysis, Chapter 4 Notes
+
+*Python for Data Analysis: Data Wrangling with pandas, NumPy & Jupyter* (3E), By Wes McKinney
 
 ## NumPy Basics
 
@@ -14,7 +16,7 @@ Why NumPy is designed with efficiency with large data:
 
 - NumPy internally stores data in a contiguous block of memory, independent of other built-in Python objects. They also use much less memory.
 
-- Can perform complex computations on entire arrays without for loops. NumPy is faster than regular Python because of its C-based algorithms that avoid overhead, extra memory or CPU cost that isn't going towards storing or processing data.
+- Can perform complex computations on entire arrays without `for` loops. NumPy is faster than regular Python because of its C-based algorithms that avoid overhead, extra memory or CPU cost that isn't going towards storing or processing data.
 
   NumPy can be 10-100 times faster (%timeit in IPy, timeit in Py)
 
@@ -29,7 +31,7 @@ print(data.shape, data.dtype)
 
 ## NumPy ndarray
 
-Viable ndarray data can be a list and a list of equal length lists(2 in ex). Giving a shape of (1, elements) and (2, elements) respectively. NumPy infers shape from data so ndim and shape attributes can be used to check. You can use np.zeros, np.ones, and np.empty to create new arrays with all 0's, 1's or uninitialized memory(not all zeros, so only use populate with new data. Pass tuples to make multidimensions.
+Viable ndarray data can be a list and a list of equal length lists(2 in ex). Giving a shape of (1, elements) and (2, elements) respectively. NumPy infers shape from data so ndim and shape attributes can be used to check. You can use np.zeros, np.ones, and np.empty to create new arrays with all 0's, 1's or uninitialized memory(not all zeros, so only use to populate with new data. Pass tuples to make multidimensional.
 
 ```{python}
 np.zeros(5)
@@ -63,7 +65,7 @@ eye, identity - create a square N x N identity matrix (1s on the diagonal and 0s
 
 This storage stratgy helps NumPy be so efficient with memory. There's a table of different types with the bit size category (int8). More important, here are the types of data int, float, complex(represented by 2 of the 32, 64 or 128 float options), bool (T/F), object(any Py object), string\_ and unicode\_ . Note Int has signed (can be negative) and unsigned(non-negative) and for 8bit signed is -128 to 127 while unsign is 0 to 255. (2\^8 = 256).
 
-You can cast an array from one data type to another with `test_arr.astype(np.int32)` . If float to int it will truncate decimal and not round, can also apply to strings but apparently `np.string_`is a fixed size and my truncate without warning, pandas is better for that. astype always creates a new array (copy) even if that data is the same as the older version
+You can cast an array from one data type to another with `test_arr.astype(np.int32)` . If float to int it will truncate decimal and not round, can also apply to strings but apparently `np.string_`is a fixed size and might truncate without warning, pandas is better for that. astype always creates a new array (copy) even if that data is the same as the older version
 
 ### Arithmetic
 
@@ -110,7 +112,7 @@ Note: that array slices are views on the original array, so the data is not copi
 
 ### Boolean Indexing
 
-You can create a boolean array to apply all where say "Bob" in names to a different array to get those values in the same positions.
+You can create a boolean array to apply all where "Bob" in names to a different array to get those values in the same positions.
 
 ```{python}
 names = np.array(["Bob", "Joe", "Will", "Bob", "Will", "Joe", "Joe"])
@@ -125,4 +127,26 @@ data[~(names == "Bob")]
 # Can use &(and) and |(or), but only the symbols not keywords like Py
 #based on how this works you can change all negative values to 0s 
 data[data < 0] = 0
+boop = np.arange(20).reshape((5,4))
+boop
 ```
+
+### Fancy Index
+
+You can pass a list or ndarray of integers and get back those rows, this also works with negative indices. Also you can do `np.arange(20).reshape((5,4))` and create a 5,4 counting up to 20. Note that this copies the data into a new array when assigning the RESULT to a variable. If you assign values with fancy indexing, the values will be modified. Ex, `data[[index tuple]]` is copied, `data[[index tuple]] = 0` means modified list.
+
+### Transposing Arrays and Swapping Axes
+
+`.transpose` or `.T` allow you to transpose the matrix 3x5 to be 5x3. The example uses `np.dot(arr.T,arr`) to find the inner matrix product of the given array and it's transposition. `swapaxes` takes a pair of axis numbers and switches the indicated axes to rearrange the data, and is also a copy.
+
+# Pseudorandom Number Generation
+
+`np.random` adds to the built-in module `random` with arrays of sample values from different probability distributions like numpy.random.standard_normal . This is not random but instead generated by a configurable random number generator that deterministically determines what values are created. You can add seeds to start the rng in a particular place such as `rng = np.random.default_rng(seed=73737)` There are several methods that use the random number generator such as `permutation`, `shuffle`, `uniform`, `integers` and ones that give values within probability distributions, such as `standard_normal`, `binomial`, `normal`, `beta`, `chisquare`, and `gamma`.
+
+# Universal Functions: Fast Element-Wise Array Functions
+
+Universal function, ufunc, is a funtction that performs element-wise operations on data in ndarrays. Many are simple element-wise transformations like np.sqrt or np.exp (exponential). ufuncs that accept 1 array are unary ufuncs and ones that accept 2 arrays are binary, like np.add or np.maximum. Ufuncs accept an optional out arg that allows them to assign their results into an existing array instead of creating new. There are a lot of normal math/Comp Sci functions but some notable are **(unary)** sign(returning pos, 0, neg), rint (round elements to nearest integer), isnan (Boolean if not a number)
+
+# Array-Oriented Programming with Arrays
+
+# 
