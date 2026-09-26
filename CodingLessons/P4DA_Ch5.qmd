@@ -1,0 +1,61 @@
+---
+title: "P4DA_Ch5"
+format: html
+---
+
+# Python 4 Data Analysis, Chapter 5 Notes
+
+*Python for Data Analysis: Data Wrangling with pandas, NumPy & Jupyter* (3E), By Wes McKinney
+
+## Starting with pandas
+
+pandas has similar coding idioms as NumPy but it is designed for working with tabular or heterogeneous data. NumPy best for homogeneously typed numerical array data.
+
+```{python}
+#Note: Install Python packages in Rstudio through Terminal w command
+#python -m pip install PACKAGE
+import pandas as pd
+#per text note, get Series and DataFrame specifically due to constant use
+from pandas import Series, DataFrame
+```
+
+### Series
+
+1 dimensional array-like object containing sequence of values of the same type and an associated array of data labels called its *index*. Also, a Series is a fixed-length, ordered dictionary, as it is a mapping of index values to data values. Could be used where you might use a dictionary.
+
+```{python}
+p_series = pd.Series([1,2,4,-7])
+p_series
+#.array and .index
+p_series.array
+p_series.index
+p2 = pd.Series([1,2,4,-7], index=["a","n","c","k"])
+p2
+p2["n"]
+#used like a dict, but I guess only calling keys and not values
+"n" in p2
+-7 in p2
+#Can pass a dictionary into a Series
+#NCAA week 3 Football D1, some ranks
+w3 = {"Texas": 1, "Indiana(IU)": 5, "Penn State": 13, "Ohio State": 7, "Georgia": 2}
+p3 = pd.Series(w3)
+p3
+#convert back to dict
+p3.to_dict()
+p3
+
+home_teams = ["Ohio State", "Purdue", "Penn State", "Indiana(IU)"]
+p4 = pd.Series(w3,index=home_teams)
+p4
+#NaN, isna and notna
+#pd.isna(p4)
+pd.notna(p4)
+#Other Series Attributes
+p4.name = "Week 3 Ranking"
+p4.index.name = "Div1 Football Teams"
+p4
+```
+
+When passing a dictionary, index is respect to the order of key insertion in the keys method. You can pass an index that can change order, ignore values in the dictionary that are not in index, and add a key not associated with a value, NaN.
+
+### DataFrame
