@@ -149,4 +149,51 @@ Universal function, ufunc, is a funtction that performs element-wise operations 
 
 # Array-Oriented Programming with Arrays
 
-# 
+`np.where` is a vectorized version of the ternary expression `x if condition else y` . You can combine scalar and/or arrays together.
+
+```{python}
+xarr = np.array([1,0,-2,-5,9,-1.5])
+
+#np.where(condition, if then this, else this)
+result = np.where(xarr >= 0, xarr, abs(xarr))
+result
+```
+
+## Math and Stat Methods
+
+```{python}
+test = np.random.default_rng().standard_normal((7,3))
+#can use array method or top-level Numpy function
+test.mean()
+np.mean(test)
+# Functions like mean and sum take opt axis args
+#sum by col
+test.sum(axis=1)
+#sum by rows
+test.sum(axis=0)
+```
+
+NOTE you can use `sum()` for Boolean values as `True` is coerced to 1 etc.
+
+### Other set Logic
+
+`np.unique()`
+
+`np.in1d(array, [values])` will return an array with Boolean values
+
+# Files with Arrays
+
+`np.save` and `np.load` . Arrays are saved in an uncompressed raw binary format with '.npy' extensions.
+
+You can save multiple arrays in an uncompressed archive with np.savez like
+
+```{python}
+np.savez("array_arch.npz", a=arr1, b=arr2)
+
+arch = np.load("array_arch.npz")
+
+arch["b"]
+
+#If it works well with data, you can compress like
+np.savez_compressed("arrays_compressed.npz", a=arr1, a=arr2)
+```
