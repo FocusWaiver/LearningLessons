@@ -59,3 +59,36 @@ p4
 When passing a dictionary, index is respect to the order of key insertion in the keys method. You can pass an index that can change order, ignore values in the dictionary that are not in index, and add a key not associated with a value, NaN.
 
 ### DataFrame
+
+```{python}
+data = {"state": ["Ohio", "Ohio", "Ohio", "Nevada", "Nevada", "Nevada"],
+        "year": [2000, 2001, 2002, 2001, 2002, 2003],
+        "pop": [1.5, 1.7, 3.6, 2.4, 2.9, 3.2]}
+frame = pd.DataFrame(data)
+
+#retrieve columns by dictionary-like notation or dot attribute
+#NOTE: dot att. will only work if the column name is valid python (no whitespace, etc)
+frame["state"]
+frame.year
+# Retrieve row with .iloc and .loc
+frame.loc[1]
+
+#CAn assign scalr values to an empty col, frame["empty_col"] = 7
+frame2 = pd.DataFrame(data, columns=["year", "state", "pop", "debt"])
+frame2["debt"] = np.arange(6)
+
+# when creating new columns, cannot use the dot attr.
+frame2["eastern"] = frame2["state"] == "Ohio"
+frame2
+#To delete a col
+del frame2["eastern"]
+frame2.columns
+```
+
+.head() outputs first 5, .tail last 5. You can specify a sequence of columns, like Series indexing. NOTE: If the col is not in the dictionary all rows in that col will be NaN. You can retrieve a column in a DataFrame as a Series or by a dictionary.
+
+When assigning lists or arrays to a column, length must match the DataFrame. Assigning to a column that doesn't exist will create a new column.
+
+If a nested dictionary is passed to the DataFrame, outer dictionary keys as the columns and inner as the row. You can transpose similar to np. `frame.T` Transposing can discard data types if columns don't share data type. Columns become arrays of Python objects, (Not sure if they always are)
+
+Index Objects
