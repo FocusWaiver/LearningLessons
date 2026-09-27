@@ -91,4 +91,38 @@ When assigning lists or arrays to a column, length must match the DataFrame. Ass
 
 If a nested dictionary is passed to the DataFrame, outer dictionary keys as the columns and inner as the row. You can transpose similar to np. `frame.T` Transposing can discard data types if columns don't share data type. Columns become arrays of Python objects, (Not sure if they always are)
 
-Index Objects
+### Index Objects
+
+Any array or other sequence of labels when consttructina Series or a DataFrame is internally converted to an Index. Index objects are immutable (While cause Type error if tried). Interesting command:
+
+`obj.index is NAME` will return Boolean
+
+Unlike Python, pandas Index can contain duplicate labels. Some other methods, append(), difference(), intersection(), union(), isin()(Bool), delete(), drop(), insert(), is_monotonic (Bool), is_unique, unique()(Bool)
+
+## Essential Functionality
+
+### Reindexing
+
+To create a new object with the values rearranged to align with the new index. Allowing you to reorder a Series and interpolate missing ones using ffill method
+
+```{python}
+obj = pd.Series(["g","e","c","a"], index=[1,3,5,7])
+obj2 = obj.reindex([1,2,3,4,5,6,7])
+obj2
+obj.reindex(np.arange(7),method="ffill")
+obj
+#Note it did not save over obj. 
+#reindex can ater row, col, or both
+qbcumpass = np.array([[317,329,378],[192,233,492],[196,252,429]])
+qbs = ["R.Browne","T.Jackson","J.A.Richter"]
+frame = pd.DataFrame(qbcumpass, index=qbs,columns=["w1","w2","w3"])
+frame2 = frame.reindex(index=qbs,columns=["w1","w2","w3","average"])
+frame2["average"] = np.mean(qbcumpass,axis=1)
+frame2
+frame3 = frame2.T
+frame3
+
+#use .loc (labels) and .iloc (integers) for indexing
+#watch for integers as index values
+#slicing with labels, endpoint is INCLUSIVE
+```
