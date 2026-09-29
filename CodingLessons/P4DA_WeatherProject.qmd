@@ -2,3 +2,105 @@
 title: "P4DA_WeatherProject"
 format: html
 ---
+
+# How many days in Amherst MA, are runnable?
+
+S1: Process weather.zip of unknown size and number of files from UMASS Trace Weather Station
+
+```{python}
+import pandas as pd
+import zipfile
+file = "weather_2015_2023.zip"
+
+#zipfile list name of files and size that are in an archive.
+#with zipfile.ZipFile(file,"r") as zf:
+  #print(zf.namelist())
+  #print(zf.infolist())
+#luckily, just a csv, 'weather_station_data', like 135 MB
+
+df = pd.read_csv(file)
+#print(df.head())
+#gives 5 x 53 object, just get names of all labels instead
+headers = df.columns.tolist()
+print(headers)
+#Whoops, Should split chunks with df creation and manipulation to save memory...
+```
+
+## Investigation chunk
+
+```{python}
+#What are the formats of interesting columns
+#5 min itervals is 288 in 24 hrs
+#Use iloc to roll through head(n) of each to investigate
+# row 180 skips weird gap, from 12/1, check values in these col
+#df.iloc[180:,15:17].head(60)
+
+#step to check lost days outside of 1-180, 12/1/15 9:05
+#start = 180
+#entry_list = []
+#for day in range(60):
+  #entry_list.append(df.iloc[start,1])
+  #start += 288
+#print(entry_list)
+#that worked for general look, but not a long-term tool
+
+#get rid of all the extra data I don't need now
+df1 = pd.read_csv(
+  file,
+  usecols=["Date time", "inTemp", "rainRate", "windSpeed","windGust"]
+)
+#print(df.dtypes)
+#some other code to determine if rain v rainRate and windGust v windSpeed would do
+df1['windGust'].max()
+#df[df['rain'] != 0.0]
+#df['rainRate'].unique()
+```
+
+After investigation, I've found the columns I want to use to answer my questions. Next steps, define a runnable day, Filter to hourly between 9am and 6pm(could expand to sunlight times based on year and/or if its a weekday) probably make a new dataFrame with the average hourly/column, then answer questions per month/year etc? I have no idea what Rain is, not a total and not super related to rainRate on rainy days. WindGust could be interesting later, but I'll continue using windSpeed for now. Date time is a string( others are floats), will need to parse to get average hourly within TOD. Loading dfs into multiple variables will use more memory.
+
+## Parameter tweak ideas
+
+TOD, weekday/sunlight time
+
+Wind, windgust vs high windSpeed situations
+
+## Runnable criteria
+
+|             | Min   | Max                           |
+|-------------|-------|-------------------------------|
+| Time of Day | 09:00 | 18:00                         |
+| Temp        | 40    | 85                            |
+| RainRate    | 0.00  | 0.00 (could change sprinkle?) |
+| WindSpeed   | 0     | 15                            |
+
+Remove old memory, make initial DataFrame to work with
+
+```{python}
+import pandas as pd
+file = "weather_2015_2023.zip"
+
+df_h = pd.read_csv(
+  file,
+  usecols=["Date time", "inTemp", "rainRate", "windSpeed"]
+)
+```
+
+```{python}
+#work chunk
+chunk = df_h.head(100)
+
+test = pd.to_datetime(chunk['Date time'])
+test
+```
+
+Some Ideas,
+
+Date time parse?
+
+JSON? is this somehow a more standard, could even write a class... wild!
+
+Todo:
+
+Figure out what options I have for applying filters
+
+Define runnable index
