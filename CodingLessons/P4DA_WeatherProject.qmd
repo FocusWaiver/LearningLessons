@@ -79,19 +79,57 @@ Remove old memory, make initial DataFrame to work with
 import pandas as pd
 file = "weather_2015_2023.zip"
 
-df_h = pd.read_csv(
+df_h1 = pd.read_csv(
   file,
-  usecols=["Date time", "inTemp", "rainRate", "windSpeed"]
+  usecols=["Date time", "outTemp", "rainRate", "windSpeed"]
 )
 ```
 
 ```{python}
 #work chunk
-chunk = df_h.head(100)
+chunk = df_h1.iloc[83:500,:]
+#changed to actual data after correct script, and removed initial test info 0:83
+df_h = df_h1.iloc[83:,:]
 
-test = pd.to_datetime(chunk['Date time'])
-test
+#column we're checking
+#col = 'date'
+df_h['Date time'] = pd.to_datetime(df_h['Date time'], errors='coerce',format='%m/%d/%y %H:%M')
+df_h.resample('h',on='Date time').agg({
+  'outTemp': 'mean',
+  'rainRate': 'sum',
+  'windSpeed': 'mean'
+})
+df_h.head()
+
+
+#check with all data
+#chunk['windSpeed'].isna().sum()
+
+
+#spliting a column
+#chunk[["date","time"]] = chunk["Date time"].str.split(" ",n=1, expand=True)
+#chunk[col].unique()
+#chunk[col].isna().sum()
+
+#In this check, found date has no na, but time has a lot
+#chunk_d = pd.to_datetime(chunk["date"], errors="coerce", format='%m/%d/%y')
+#chunk_t = chunk['time']
+#chunk_t = pd.to_datetime(chunk["time"], errors="coerce", format='%H:%M')
+#chunk_d.info()
+#chunk_t.info()
+#any NaN in Date time... No, but used windSpeed to check command worked, fillna as an option
+#df_h["windSpeed"].isna().sum()
 ```
+
+Miscellaneous
+
+Come back to this.... ends up converting to 4 ndarrays instead of an r dataframe
+
+To view() my pandas dataframes, you need to convert it to an R dataFrame, like this:
+
+df_r \<- reticulate::py_to_r(py\$pa_df)
+
+Veiw(df_r)
 
 Some Ideas,
 

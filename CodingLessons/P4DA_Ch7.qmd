@@ -6,3 +6,57 @@ format: html
 # Data Cleaning
 
 ## Handling missing Data
+
+NA (Not available) data: convention borrowed from R, and in Stat applications, may be data that does not exist or that exists but was not observed (e.g. data collection issue).
+
+Tyeps of NA (not available) data:
+
+None: Python built-in
+
+NaN (Not a Number) is a float dtype. `.isna()` gives a Boolean, `.isna().sum()` will give you how many NaNs. Also, from pandas and in example to add to a new Series it is `np.nan` .
+
+Related Methods:
+
+dropna - Filter axis labels on whether values for each label have missing data, has thresholds for level of tolerance
+
+fillna - Fill na values with a value or interpolation with `ffill` or `bfill` . If you send a dict you can fill a value by column
+
+isna - Boolean if present
+
+notna - opposite of isna, False for NA values
+
+dropna, params:
+
+axis 0'index' or 1'columns', default 0
+
+how= 'any', 'all' , default 'any'
+
+thresh= int
+
+inplace=Bool, default False ; whether to modify the Df rather than create new
+
+.duplicated() returns Bool if duplicate. .drop_duplicates() removes falses
+
+map()
+
+method on a Series accepts a function or dict-like obj containing a mapping for a transformation of values.
+
+```{python}
+CFB_w5 = pd.DataFrame({'FBS_I': ['Purdue', 'Penn State', 'Indiana', 'Tulane'],'Wins': [2,3,5,2]})
+
+
+u_to_state = {
+'Purdue': 'IN',
+'Penn State': 'PA',
+'Indiana': 'IN'
+}
+
+CFB_w5['State'] = CFB_w5['FBS_I'].map(u_to_state)
+CFB_w5
+```
+
+You can use .replace() to get rid of sentinel values or NaN directly. Can pass a dict.
+
+rename() to change axis labels easily
+
+Discretization and Binning
